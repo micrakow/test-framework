@@ -84,6 +84,21 @@ class Log(HtmlLogManager, metaclass=Singleton):
         yield
         super(Log, self).end_group()
 
+    @contextmanager
+    def expect_fail(self, msg):
+        failed = False
+        try:
+            yield
+        except Exception as e:
+            failed = True
+            if msg not in str(e):
+                from core.test_run import TestRun
+                TestRun.fail(f"Expected to found \"{msg}\" in exception "
+                             f"message: \"{str(e)}\"")
+
+        if failed is False:
+            TestRun.fail("Command succeeded (should fail)!")
+
     def add_build_info(self, msg):
         super(Log, self).add_build_info(msg)
         if Log.logger:

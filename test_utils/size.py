@@ -101,11 +101,14 @@ class Size:
     def __mul__(self, other: int):
         return Size(math.ceil(self.get_value() * other))
 
+    def __mod__(self, other):
+        return Size(int(self) % int(other))
+
     @multimethod
     def __truediv__(self, other):
         if other.get_value() == 0:
             raise ValueError("Divisor must not be equal to 0.")
-        return self.get_value() / other.get_value()
+        return Size(self.get_value() / other.get_value())
 
     @multimethod
     def __truediv__(self, other: int):
